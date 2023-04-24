@@ -1,6 +1,6 @@
 # datastorage.py
 #
-# We store our data in 2 private globals 
+# Our data is stored in 2 private globals 
 # 
 #   'players'
 #   
@@ -40,13 +40,14 @@ class cd:
 		os.chdir(self.savedPath)
 
 #############################################################################
+#
+# Public definitions:
 
 def init(year, season):
     """Initialize the datastorage module.
     """
     _load_players(year, season)
 
-#############################################################################
 
 def players():
 	""" Return a dictionary of players
@@ -58,7 +59,6 @@ def players():
 	global _players
 	return _players
 
-#############################################################################
 
 def teams():
 	""" Return a dict of teams
