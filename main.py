@@ -24,3 +24,10 @@ async def get_all_players(year: int, season: str) -> dict:
 @app.get("/players/{id}")
 async def get_one_player(id: int) -> dict:
     pass
+
+
+# get the stat description / definition
+@app.get("/stats/definition/{stat}")
+async def get_one_player(stat: str) -> dict:
+    pass
+

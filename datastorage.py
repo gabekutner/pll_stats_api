@@ -17,6 +17,7 @@
 
 import csv
 import os.path
+import json
 
 
 class cd:
@@ -74,12 +75,13 @@ def teams():
 #
 #Private definitions:
 
-# load list of players from .csv depending on year and season
-# and put into dict
+# Load list of players from .csv depending on year and season
+# and put into list
 def _load_players(year, season):
 	""" Load the list of players from disk """
 	global _players
 
+	# testing
 	p = []
 
 	# Folder holding .csv stat files must be named 'stats'
@@ -97,58 +99,74 @@ def _load_players(year, season):
 		# get list of players 
 		f = csv.DictReader(open(x, 'r'))
 		for row in f:
+
+			os.chdir(cm.savedPath)
+
+			stats = _get_model(row)
+
 			p.append({
 				'ID': row['\ufeffID'],
 				'First Name': row['First Name'],
 				'Last Name': row['Last Name'],
 				'Jersey': row['Jersey'],
 				'Position': row['Position'],
-				'Stats': {
-					'Games Played': row['Games Played'],
-					'Points': row['Points'],
-					'Total Goals': row['Total Goals'],
-					'1pt Goals': row['1pt Goals'],
-					'2pt Goals': row['2pt Goals'],
-					'Scoring Points': row['Scoring Points'],
-					'Assists': row['Assists'],
-					'Shots': row['Shots'],
-					'Shot Pct': row['Shot Pct'],
-					'Shots On Goal': row['Shots On Goal'],
-					'SOG Pct': row['SOG Pct'],
-					'2pt Shots': row['2pt Shots'],
-					'2pt Shot Pct': row['2pt Shot Pct'],
-					'2pt Shots On Goal': row['2pt Shots On Goal'],
-					'Groundballs': row['Groundballs'],
-					'Turnovers': row['Turnovers'],
-					'Caused Turnovers': row['Caused Turnovers'],
-					'Faceoffs': row['Faceoffs'],
-					'Faceoff Wins': row['Faceoff Wins'],
-					'Faceoff Losses': row['Faceoff Losses'],
-					'Faceoff Pct': row['Faceoff Pct'],
-					'Saves': row['Saves'],
-					'Save Pct': row['Save Pct'],
-					'Scores Against': row['Scores Against'],
-					'Scores Against Average': row['Scores Against Average'],
-					'2pt Goals Against': row['2pt Goals Against'],
-					'2pt GAA': row['2pt GAA'],
-					'Time On Field': row['Time On Field'],
-					'Total Penalties': row['Total Penalties'],
-					'Penalty Minutes': row['Penalty Minutes'],
-					'Power Play Goals': row['Power Play Goals'],
-					'Power Play Shots': row['Power Play Shots'],
-					'Short Handed Goals': row['Short Handed Goals'],
-					'Short Handed Shots': row['Short Handed Shots'],
-					'Short Handed Goals Against': row['Short Handed Goals Against'],
-					'Power Play Goals Against': row['Power Play Goals Against']
-				}
+				'Stats': stats
 			})
 
 	_players = p
+	return _players
+
+
+def _return_column_values(row, c, specStr="", specInt=0):
+	""" Given the row and a column name: c and an optional parameter 
+		for specifying parameters return str value of stat
+	"""
+	_stat = row[c]
+	return _stat
+
+
+def _get_model(row):
+	""" Returns JSON model for _load_players() 
+	"""
+
+	stat_val = _return_column_values(row, 'Position')
+
+	f = open('data.json', 'r')
+	data = json.load(f)
+
+	model = data[row['Position']]
+
+	for i in model:
+		data[row['Position']][i] = row[i]
+
+	return model
+	
 
 #############################################################################
 #
 # Testing
 
 if __name__ == '__main__':
-	init(2022, 'regular')
-	print(players())
+	pass
+	# init(2022, 'regular')
+	# for player in players():
+	# 	print(player['Position'])
+
+	
+	# f = csv.DictReader(open('stats/2022-regular-p.csv', 'r'))
+	# for row in f:
+	
+
+	# 	f = open('data.json', 'r')
+	# 	data = json.load(f)
+
+	# 	model = data[row['Position']]
+		
+	# 	for i in model:
+	# 		data[row['Position']][i] = row[i]
+
+
+	# 	return model
+
+	# with open('data.json', 'w') as output:
+	# 	json.dump(data, output)
