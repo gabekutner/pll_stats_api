@@ -80,8 +80,6 @@ def teams():
 def _load_players(year, season):
 	""" Load the list of players from disk """
 	global _players
-
-	# testing
 	p = []
 
 	# Folder holding .csv stat files must be named 'stats'
