@@ -80,6 +80,7 @@ def teams():
 def _load_players(year, season):
 	""" Load the list of players from disk """
 	global _players
+
 	p = []
 
 	# Folder holding .csv stat files must be named 'stats'
@@ -138,33 +139,17 @@ def _get_model(row):
 		data[row['Position']][i] = row[i]
 
 	return model
-	
 
 #############################################################################
 #
 # Testing
 
 if __name__ == '__main__':
+	
 	pass
-	# init(2022, 'regular')
-	# for player in players():
-	# 	print(player['Position'])
-
-	
-	# f = csv.DictReader(open('stats/2022-regular-p.csv', 'r'))
-	# for row in f:
-	
-
-	# 	f = open('data.json', 'r')
-	# 	data = json.load(f)
-
-	# 	model = data[row['Position']]
-		
-	# 	for i in model:
-	# 		data[row['Position']][i] = row[i]
 
 
-	# 	return model
 
-	# with open('data.json', 'w') as output:
-	# 	json.dump(data, output)
+
+
+
