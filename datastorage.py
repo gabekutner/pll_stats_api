@@ -19,6 +19,7 @@ import csv
 import os.path
 import json
 
+import utils
 
 class cd:
 	""" Context manager for changing the working directory. """
@@ -127,7 +128,6 @@ def _return_column_values(row, c, specStr="", specInt=0):
 def _get_model(row):
 	""" Returns JSON model for _load_players() 
 	"""
-
 	stat_val = _return_column_values(row, 'Position')
 
 	f = open('data.json', 'r')
@@ -147,7 +147,6 @@ def _get_model(row):
 if __name__ == '__main__':
 	
 	pass
-
 
 
 
