@@ -1,6 +1,4 @@
-# utils.py
-#
-# 
+# utilities.py
 
 def id_stat_list(player, stat):
     """ Create the list [player: {'id': player.id, 'first name': 
