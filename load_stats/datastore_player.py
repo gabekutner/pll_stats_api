@@ -3,8 +3,9 @@
 import os
 import csv
 import json
+from fastapi import HTTPException
 
-from . import utils
+from .utils import cd, _get_model, find_path, BASE_DIR
 
 
 # Public definitions
@@ -25,17 +26,17 @@ def _load_players(year, season):
 	global _players
 	_players = []
 
-	path = utils.find_path(root=utils.BASE_DIR, dir='player_data')
+	path = find_path(root=BASE_DIR, dir='player_data')
 	
-	with utils.cd(path) as cm:
-		for file in (file := os.listdir()):
+	with cd(path) as cm:
+		for file in (files := os.listdir()):
 			if (file.find(str(year)+'-'+season)) == 0:
 				
 				for row in (csv_reader := csv.DictReader(open(file, 'r'))):
 					# change directories for access to data.json models
 					os.chdir(cm.twoUpPath)
 
-					stats = utils._get_model(row)
+					stats = _get_model(row)
 
 					_players.append({
 						'ID': row['\ufeffID'],

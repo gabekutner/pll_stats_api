@@ -2,15 +2,13 @@ import os
 from fastapi import FastAPI, HTTPException, status
 
 from load_stats import datastore_player, datastore_team
-import utils
+from utils import id_stat_list
 
 app = FastAPI()
 
 
 @app.get("/players/{year}/{season}")
 async def get_all_players(year: int, season: str) -> dict:
-
-    # check if data for year exists
 
     try:
     	datastore_player.init(year, season)
@@ -23,13 +21,14 @@ async def get_all_players(year: int, season: str) -> dict:
         }
 
     players = datastore_player.players()
+    if not players:
+        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
+
     return {'players': players}
 
 
 @app.get("/players/{year}/{season}/{id}")
 async def get_one_player(year: int, season: str, id: int) -> dict:
-
-    # check if data for year exists
 
     try:
     	datastore_player.init(year, season)
@@ -41,11 +40,18 @@ async def get_one_player(year: int, season: str, id: int) -> dict:
             'ex': '/players/2022/regular'
         }
 
+    players = datastore_player.players()
+
+    if not players:
+        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
+
     try:
         #check if id exists
-        assert 0 <= id <= len(players := datastore_player.players())
+        assert 0 <= id <= len(players)
     except AssertionError:  
         return {'message': f'Player with ID: {id} does not exist.'}
+
+    
 
     player = players[id-1]
     return {'player': player}
@@ -53,8 +59,6 @@ async def get_one_player(year: int, season: str, id: int) -> dict:
 
 @app.get("/players/{year}/{season}/leaders/{stat}")
 async def player_stat_leaders(year: int, season: str, stat: str) -> dict:
-    
-    # check if data for year exists
 
     try:
         datastore_player.init(year, season)
@@ -68,8 +72,11 @@ async def player_stat_leaders(year: int, season: str, stat: str) -> dict:
 
     adjusted_players = []
     for player in (players := datastore_player.players()):
-        list = utils.id_stat_list(player, stat)
+        list = id_stat_list(player, stat)
         adjusted_players.append(list)
+
+    if not players:
+        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
 
     sorted_players = sorted(adjusted_players, key = lambda d: d['stat'], reverse=True)
     return {'players': sorted_players}
@@ -78,8 +85,6 @@ async def player_stat_leaders(year: int, season: str, stat: str) -> dict:
 @app.get("/teams/{year}")
 async def get_all_teams(year: int) -> dict:
 
-    # check if data for year exists
-
     try:
         datastore_team.init(year)
 
@@ -91,14 +96,16 @@ async def get_all_teams(year: int) -> dict:
         }
 
     teams = datastore_team.teams()
+
+    if not teams:
+        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
+
     return {'teams': teams}
 
 
 @app.get("/teams/{year}/{id}")
 async def get_one_team(year: int, id: int) -> dict:
 
-    # check if data for year exists
-
     try:
         datastore_team.init(year)
 
@@ -110,6 +117,9 @@ async def get_one_team(year: int, id: int) -> dict:
         }
 
     teams = datastore_team.teams()
+
+    if not teams:
+        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
 
     try:
         #check if id exists

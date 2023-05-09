@@ -36,4 +36,3 @@ def _load_teams(year):
 					_teams.append(row)
 
 	return _teams
-
