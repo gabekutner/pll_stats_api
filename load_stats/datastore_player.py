@@ -4,26 +4,7 @@ import os
 import csv
 import json
 
-from load_stats import utils
-
-class cd:
-	""" Context manager for changing the working directory. """
-	def __init__(self, newPath):
-		# expanduser changes ~/file.txt -> /home/files/file.txt
-		self.newPath = os.path.expanduser(newPath)
-
-	def __enter__(self):
-		self.savedPath = os.getcwd()
-		self.oneUpPath = os.path.abspath(os.path.join(self.newPath, os.pardir))
-		self.twoUpPath = os.path.abspath(os.path.join(self.oneUpPath, os.pardir))
-		# change working directory
-		os.chdir(self.newPath)
-		return self
-
-	# etype, value, traceback for throwing exceptions
-	def __exit__(self, etype, value, traceback):
-		# change back to original directory
-		os.chdir(self.savedPath)
+from . import utils
 
 
 # Public definitions
@@ -43,8 +24,10 @@ def _load_players(year, season):
 	""" Load players from data directory. """
 	global _players
 	_players = []
+
+	path = utils.find_path(root=utils.BASE_DIR, dir='player_data')
 	
-	with cd('load_stats/data/player_data') as cm:
+	with utils.cd(path) as cm:
 		for file in (file := os.listdir()):
 			if (file.find(str(year)+'-'+season)) == 0:
 				
@@ -64,9 +47,3 @@ def _load_players(year, season):
 					})
 
 	return _players
-
-
-
-
-
-
