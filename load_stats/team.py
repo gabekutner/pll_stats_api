@@ -13,11 +13,21 @@ def init(year=2022):
 	_load_teams(year)
 
 
-def teams():
+def get_teams():
 	""" Load teams from disk. """
 	global _teams
 	return _teams
 
+
+def get_team(*,id):
+	""" Load team from disk. """
+	global _teams
+	try:
+		assert 0 <= id <= len(_teams)
+	except AssertionError:
+		return None
+
+	return _teams[id-1]
 
 # Private definitions
 def _load_teams(year):

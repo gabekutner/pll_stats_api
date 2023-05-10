@@ -13,10 +13,21 @@ def init(year=2022, season="regular"):
 	_load_players(year, season)
 
 
-def players():
+def get_players():
 	""" Load players from disk. """
 	global _players
 	return _players
+
+
+def get_player(*,id):
+	""" Load player from disk. """
+	global _players
+	try:
+		assert 0 <= id <= len(_players)
+	except AssertionError:
+		return None
+
+	return _players[id-1]
 
 
 # Private definitions

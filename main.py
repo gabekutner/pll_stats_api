@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, HTTPException, status
 
-from load_stats import datastore_player, datastore_team
+from load_stats import player, team
 from utils import id_stat_list
 
 app = FastAPI()
@@ -11,7 +11,7 @@ app = FastAPI()
 async def get_all_players(year: int, season: str) -> dict:
 
     try:
-    	datastore_player.init(year, season)
+    	player.init(year, season)
 
     except UnboundLocalError:
         return {
@@ -20,7 +20,7 @@ async def get_all_players(year: int, season: str) -> dict:
             'ex': '/players/2022/regular'
         }
 
-    players = datastore_player.players()
+    players = player.get_players()
     if not players:
         raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
 
@@ -31,7 +31,7 @@ async def get_all_players(year: int, season: str) -> dict:
 async def get_one_player(year: int, season: str, id: int) -> dict:
 
     try:
-    	datastore_player.init(year, season)
+    	player.init(year, season)
 
     except UnboundLocalError:
         return {
@@ -40,28 +40,19 @@ async def get_one_player(year: int, season: str, id: int) -> dict:
             'ex': '/players/2022/regular'
         }
 
-    players = datastore_player.players()
+    one_player = player.get_player(id=id)
 
-    if not players:
-        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
+    if not one_player:
+        raise HTTPException(status_code=404, detail=f'Player with id: {id} does not exist.')
 
-    try:
-        #check if id exists
-        assert 0 <= id <= len(players)
-    except AssertionError:  
-        return {'message': f'Player with ID: {id} does not exist.'}
-
-    
-
-    player = players[id-1]
-    return {'player': player}
+    return {'player': one_player}
 
 
 @app.get("/players/{year}/{season}/leaders/{stat}")
 async def player_stat_leaders(year: int, season: str, stat: str) -> dict:
 
     try:
-        datastore_player.init(year, season)
+        player.init(year, season)
 
     except UnboundLocalError:
         return {
@@ -71,8 +62,8 @@ async def player_stat_leaders(year: int, season: str, stat: str) -> dict:
         }
 
     adjusted_players = []
-    for player in (players := datastore_player.players()):
-        list = id_stat_list(player=player, stat=stat)
+    for one_player in (players := player.get_players()):
+        list = id_stat_list(player=one_player, stat=stat)
         adjusted_players.append(list)
 
     if not players:
@@ -86,7 +77,7 @@ async def player_stat_leaders(year: int, season: str, stat: str) -> dict:
 async def get_all_teams(year: int) -> dict:
 
     try:
-        datastore_team.init(year)
+        team.init(year)
 
     except UnboundLocalError:
         return {
@@ -95,7 +86,7 @@ async def get_all_teams(year: int) -> dict:
             'ex': '/players/2022/regular'
         }
 
-    teams = datastore_team.teams()
+    teams = team.get_teams()
 
     if not teams:
         raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
@@ -107,7 +98,7 @@ async def get_all_teams(year: int) -> dict:
 async def get_one_team(year: int, id: int) -> dict:
 
     try:
-        datastore_team.init(year)
+        team.init(year)
 
     except UnboundLocalError:
         return {
@@ -116,26 +107,19 @@ async def get_one_team(year: int, id: int) -> dict:
             'ex': '/players/2022/regular'
         }
 
-    teams = datastore_team.teams()
+    one_team = team.get_team(id=id)
 
-    if not teams:
-        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
+    if not one_team:
+        raise HTTPException(status_code=404, detail=f'The team with id: {id} does not exist..')
 
-    try:
-        #check if id exists
-        assert 0 <= id <= len(teams)
-    except AssertionError:  
-        return {'message': f'Team with ID: {id} does not exist.'}
-
-    team = teams[id-1]
-    return {'team': team}
+    return {'team': one_team}
 
 
 @app.get("/teams/{year}/leaders/{stat}")
 async def team_stat_leaders(year: int, stat: str) -> dict:
 
     try: 
-        datastore_team.init(year)
+        team.init(year)
 
     except UnboundLocalError:
         return {
@@ -145,12 +129,12 @@ async def team_stat_leaders(year: int, stat: str) -> dict:
         }
 
     adjusted_teams = []
-    for team in (teams := datastore_teams.teams()):
+    for one_team in (teams := team.get_teams()):
 
         # this is not working, adjust _get_model and id_stat_list for it to work
 
 
-        list = id_stat_list(team, stat)
+        list = id_stat_list(one_team, stat)
         adjusted_teams.append(list)
 
     if not teams:

@@ -1,7 +1,13 @@
-from load_stats import datastore_player, datastore_team
+from load_stats import player, team
 
-datastore_player.init()
-datastore_team.init()
+# Initialize
+player.init()
+team.init()
 
-players = datastore_player.players()
-teams = datastore_team.teams()
+# Get all
+players = player.get_players()
+teams = team.get_teams()
+
+# Get one
+player = player.get_player(id=5)
+team = team.get_team(id=5)
