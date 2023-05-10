@@ -1,11 +1,9 @@
 # Pll Stats API
 An api for PLL player and team statistics.
 
-Data from ```https://stats.premierlacrosseleague.com/```
+Data from [https://stats.premierlacrosseleague.com/](https://stats.premierlacrosseleague.com/)
 
-**main.py** - FastAPI
 
-**api.py** - ```load_stats``` package
 
 ### Usage
 ```Python
