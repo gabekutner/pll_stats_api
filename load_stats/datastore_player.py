@@ -7,9 +7,8 @@ from fastapi import HTTPException
 
 from .utils import cd, _get_model, find_path, BASE_DIR
 
-
 # Public definitions
-def init(year, season):
+def init(year=2022, season="regular"):
 	""" Initialize the players module. """
 	_load_players(year, season)
 

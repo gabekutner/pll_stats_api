@@ -4,11 +4,11 @@ import os
 import csv
 import json
 
-from . import utils
+from .utils import cd, find_path, _get_model, BASE_DIR
 
 
 # Public definitions
-def init(year):
+def init(year=2022):
 	""" Initialize the teams module. """
 	_load_teams(year)
 
@@ -25,14 +25,13 @@ def _load_teams(year):
 	global _teams
 	_teams = []
 
-	path = utils.find_path(root=utils.BASE_DIR, dir='team_data')
+	path = find_path(root=BASE_DIR, dir='team_data')
 	
-	with utils.cd(path) as cm: 
+	with cd(path) as cm: 
 		for file in (file := os.listdir()):
 			if (file.find(str(year)+'-t')) == 0:
 				
 				for row in (csv_reader := csv.DictReader(open(file, 'r'))):
-
 					_teams.append(row)
 
 	return _teams

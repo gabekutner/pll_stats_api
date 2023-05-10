@@ -72,7 +72,7 @@ async def player_stat_leaders(year: int, season: str, stat: str) -> dict:
 
     adjusted_players = []
     for player in (players := datastore_player.players()):
-        list = id_stat_list(player, stat)
+        list = id_stat_list(player=player, stat=stat)
         adjusted_players.append(list)
 
     if not players:
@@ -134,9 +134,31 @@ async def get_one_team(year: int, id: int) -> dict:
 @app.get("/teams/{year}/leaders/{stat}")
 async def team_stat_leaders(year: int, stat: str) -> dict:
 
-    pass
+    try: 
+        datastore_team.init(year)
+
+    except UnboundLocalError:
+        return {
+            'message': 'url configuration error',
+            'correct url config': '/players/year/season',
+            'ex': '/players/2022/regular'
+        }
+
+    adjusted_teams = []
+    for team in (teams := datastore_teams.teams()):
+
+        # this is not working, adjust _get_model and id_stat_list for it to work
 
 
+        list = id_stat_list(team, stat)
+        adjusted_teams.append(list)
+
+    if not teams:
+        raise HTTPException(status_code=404, detail=f'Stats for {year} does not exist.')
+
+
+    sorted_teams = sorted(adjusted_teams, key = lambda d: d['stat'], reverse=True)
+    return {'teams': sorted_teams}
 
 
 

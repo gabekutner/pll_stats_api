@@ -5,9 +5,11 @@ def id_stat_list(player, stat):
         player.firstname, 'last name': player.lastname,  'position': player.position},
          'stat': stat]
     """
-    a = {'ID': player['ID'], 'First Name': player['First Name'], 
+
+
+    player = {'ID': player['ID'], 'First Name': player['First Name'], 
             'Last Name': player['Last Name'], 'Position': player['Position']}
-    
+
     try:
         if player['Stats'][stat]:
             b = int(player['Stats'][stat])
@@ -15,5 +17,11 @@ def id_stat_list(player, stat):
     except KeyError:
         b = 0
 
-    # returns [player: {}, stat]
-    return {'player': a, 'stat': b}
+    return {'player': player, 'stat': b}
+
+
+
+
+
+
+
