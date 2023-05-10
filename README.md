@@ -5,7 +5,7 @@ Data from ```https://stats.premierlacrosseleague.com/```
 
 **main.py** - FastAPI
 
-**api.py** - ```load_stat``` package
+**api.py** - ```load_stats``` package
 
 ### Usage
 ```Python
