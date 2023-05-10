@@ -3,21 +3,27 @@ An api for PLL player and team statistics.
 
 Data from ```https://stats.premierlacrosseleague.com/```
 
-**main.py** - FastAPI api
+**main.py** - FastAPI
 
-**api.py** - Shows how to use load_stats package
+**api.py** - ```load_stat``` package
 
 ### Usage
 ```Python
-from load_stats import datastore_player, datastore_team
+from load_stats import player, team
 
 year = 2022
 season = 'regular' #regular season
 
-datastore_player.init(year, season)
-datastore_team.init(year)
+player.init(year, season)
+team.init(year)
 
-players = datastore_player.players()
-teams = datastore_team.teams()
+# Get all
+players = player.get_players()
+teams = team.get_teams()
+
+# Get one
+player = player.get_player(id=1)
+team = team.get_team(id=1)
+
 
 ```
